@@ -73,4 +73,21 @@ describe('hub/indexers', function() {
       expect(doc).has.deep.property('data.attributes.enabled', false);
     });
   });
+
+  describe('events', function() {
+    beforeEach(setup);
+    afterEach(teardown);
+
+    it("triggers an event after each indexing", async function() {
+      let indexers = await env.lookup('hub:indexers');
+
+      let resolve;
+      let done = new Promise(r => resolve = r);
+      indexers.events.on('index_update', resolve);
+
+      indexers.update();
+
+      return done;
+    });
+  });
 });
